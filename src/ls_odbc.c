@@ -1101,8 +1101,22 @@ static int env_connect (lua_State *L) {
 	}
 
 	/* tries to connect handle */
-	ret = SQLConnect (hdbc, sourcename, SQL_NTS,
-		username, SQL_NTS, password, SQL_NTS);
+	if (is_connection_string) {
+		ret = SQLDriverConnect(
+			hdbc,
+			NULL, /* window handle */
+			sourcename,
+			SQL_NTS,
+			NULL, /* output connection string buffer */
+			0, /* sizeof output buffer */
+			NULL, /* actual length of output string buffer */
+			SQL_DRIVER_NOPROMPT
+		);
+	} else {
+		ret = SQLConnect (hdbc, sourcename, SQL_NTS, 
+			username, SQL_NTS, password, SQL_NTS);
+	}
+	
 	if (error(ret)) {
 		ret = fail(L, hDBC, hdbc);
 		SQLFreeHandle(hDBC, hdbc);
