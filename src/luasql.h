@@ -25,7 +25,7 @@
 #define LUASQL_CURSOR "Each driver must have a cursor metatable"
 
 // Macro to handle userdata creation across Lua versions
-#if LUA_VERSION_NUM >= 504                        
+#if LUA_VERSION_NUM >= 504
 #define LUASQL_NEWUD(L, size) lua_newuserdatauv(L, size, 0)
 #else
 #define LUASQL_NEWUD(L, size) lua_newuserdata(L, size)
@@ -42,6 +42,7 @@ void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup);
 #endif
 
 /* Driver initialization functions prototypes */
+LUASQL_API int luaopen_luasql_duckdb (lua_State *L);
 LUASQL_API int luaopen_luasql_firebird (lua_State *L);
 LUASQL_API int luaopen_luasql_mysql (lua_State *L);
 LUASQL_API int luaopen_luasql_oci8 (lua_State *L);
