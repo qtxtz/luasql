@@ -186,6 +186,7 @@ local env = driver.odbc()
 	the ODBC driver expects the name of the DSN;
 	the Oracle driver expects the service name;
 	See also: <a href="#postgres_extensions">PostgreSQL</a>,
+		<a href="#odbc_extensions">ODBC</a>
 		and <a href="#mysql_extensions">MySQL</a> extensions.<br/>
 	Returns: a <a href="#connection_object">connection object</a>.</dd>
 
@@ -402,8 +403,8 @@ the MySQL driver also offers these extra features:</p>
 
 <p>Notes:</p>
 
-<p>This driver is compatible with versions 4.0, 4.1 and 5.0 of the
-MySQL API. Only from version 4.1 MySQL provides support for transactions by using
+<p>This driver is compatible with versions 4.0, 4.1 and 5.0 of the MySQL API.
+Only from version 4.1 MySQL provides support for transactions by using
 BDB or INNODB tables.
 Therefore, with version 4.0 or without one of these types of tables, the
 methods <code>commit</code>, <code>rollback</code> and
@@ -423,6 +424,7 @@ the Oracle driver also offers this extra feature:</p>
   <dd>See also: <a href="#cursor_object">cursor objects</a><br/>
     Returns: the number of rows in the query result.</dd>
 </dl>
+
 
 <h2><a name="sqlite3_extensions"></a>SQLite3 Extensions</h2>
 
@@ -445,6 +447,7 @@ the SQLite3 driver also offers this extra feature:</p>
   </dd>
 </dl>
 
+
 <h2><a name="duckdb_extensions"></a>DuckDB Extensions</h2>
 
 <p>Besides the basic functionality provided by all drivers,
@@ -454,6 +457,22 @@ the DuckDB driver also offers this extra feature:</p>
   <dt><strong><code>cur:numrows()</code></strong></dt>
   <dd>See also: <a href="#cursor_object">cursor objects</a><br/>
     Returns: the number of rows in the query result.</dd>
+</dl>
+
+
+<h2><a name="odbc_extensions"></a>ODBC Extensions</h2>
+
+<p>Besides the basic functionality provided by all drivers,
+the ODBC driver also offers this extra feature:</p>
+
+<dl class="reference">
+  <dt><strong><code>env:connect(connectionstring)</code></strong></dt>
+  <dd>The first parameter can contain all connection information,
+    as stated in the documentation for <code>SQLDriverConnect</code> function
+    in the ODBC reference manual
+    (e.g. <small><code>environment:connect("dsn=STLEC1;connecttype=2;bitdata=2;optimizefornrows=30")</code></small>) <br/>
+    See also: <a href="#environment_object">environment objects</a><br/>
+  </dd>
 </dl>
 
 </div> <!-- id="content" -->
