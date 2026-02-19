@@ -262,6 +262,27 @@ static int stmt_shut(lua_State *L, stmt_data *stmt)
 }
 
 /*
+** Resets a statement to be reused
+** Returns non-zero on error
+*/
+static int raw_stmt_reset(lua_State *L, stmt_data *stmt)
+{
+	SQLRETURN ret;
+
+	stmt->params = free_stmt_params(stmt->params, stmt->numparams);
+	ret = SQLFreeStmt(stmt->hstmt, SQL_RESET_PARAMS);
+	if (error(ret)) {
+		return 1;
+	}
+	ret = SQLFreeStmt(stmt->hstmt, SQL_UNBIND);
+	if (error(ret)) {
+		return 1;
+	}
+
+	return 0;
+}
+
+/*
 ** Closes a cursor directly
 ** Returns non-zero on error
 */
@@ -629,6 +650,24 @@ static int stmt_close(lua_State *L)
 	return 1;
 }
 
+static int stmt_reset(lua_State *L)
+{
+	stmt_data *stmt = getstatement(L, 1);
+	luaL_argcheck (L, stmt != NULL, 1, LUASQL_PREFIX"statement expected");
+	luaL_argcheck (L, stmt->lock == 0, 1,
+	               LUASQL_PREFIX"there are still open cursors");
+
+	if (stmt->closed) {
+		lua_pushboolean (L, 0);
+		return 1;
+	}
+	if(raw_stmt_reset(L, stmt)) {
+		return fail(L, hSTMT, stmt->hstmt);
+	}
+
+	lua_pushboolean(L, 1);
+	return 1;
+}
 
 /*
 ** Closes a connection.
@@ -1204,6 +1243,7 @@ static void create_metatables (lua_State *L) {
 		{"__close", stmt_close},
 		{"close", stmt_close},
 		{"execute", stmt_execute},
+		{"reset", stmt_reset},
 		{"getparamtypes", stmt_paramtypes},
 		{NULL, NULL},
 	};
